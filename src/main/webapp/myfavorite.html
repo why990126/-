@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>途牛旅游网-我的收藏</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/common.css">
+        <link rel="stylesheet" href="css/index.css">
+
+       <style>
+           .tab-content .row>div {
+                margin-top: 10px;
+           } 
+           .tab-content {
+                margin-bottom: 36px;
+           }
+       </style>
+       <script src="js/jquery-3.3.1.min.js"></script>
+        <!--引入分页插件样式文件-->
+        <link rel="stylesheet" href="skin/laypage.css">
+        <!--引入分页插件的js库文件-->
+        <script src="skin/laypage.js"></script>
+        <script>
+            // 1. 网页加载完毕发送异步请求获得收藏数据
+            $(function () {
+                showPageInfo(1);
+            });
+
+            // 发送异步请求获得收藏数据
+            function showPageInfo(curPage) {
+                $.get({
+                    url:"favorite",// 请求地址
+                    data:{curPage:curPage,action:"findPageBeanFavorite"},// 请求参数
+                    dataType:"json",// 返回值类型
+                    success:function (pageBean) { // 成功回调
+                        // 2. 更新列表数据和分页信息
+                        // 2.1 区域1：更新列表数据
+                        // 获得收藏对象数组
+                        var favoriteList = pageBean.dataList;
+                        // 定义变量：用来拼接列表元素
+                        var html = "";
+                        // 遍历收藏对象数组
+                        $(favoriteList).each(function (index, favorite) {
+                            // 获得旅游路线对象
+                            var route = favorite.route;
+                            // 拼接每条路线元素
+                            html += " <div class=\"col-md-3\">\n" +
+                                "<a href=\"route_detail.html?rid=" +route.rid+ "\">\n" +
+                                "    <img src=\""+route.rimage+"\" alt=\"\">\n" +
+                                "    <div class=\"has_border\">\n" +
+                                "        <h3>"+route.rname+"</h3>\n" +
+                                "        <div class=\"price\">网付价<em>￥</em><strong>"+route.price+"</strong><em>起</em></div>\n" +
+                                "    </div>\n" +
+                                "</a>\n" +
+                                "</div>"
+                        })
+                        // 更新row div标签体内容
+                        $(".tab-content #home .row").html(html);
+
+                        // 2.2 区域2：分页联动信息：分页插件
+                        laypage({
+                            cont: "laypage", // 用于展现分页信息数据的容器标签id名
+                            pages: pageBean.totalPage,    // 通过后台拿到的总页数
+                            curr:  pageBean.curPage,    // 当前页
+                            skin: '#1CBB38', // 设置当前页样式，可以使用内置皮肤（yahei），也可以直接赋值16进制颜色值，如:#c00
+                            groups: 10,// 设置连续显示分页数字的页码的个数
+                            jump: function(obj, first){ // 第一次执行插件代码和用户点击不同页码时候触发运行的函数
+                                // 参数1：obj，这个参数有个属性curr，也就是obj.curr是用户点击要访问的页码
+                                // 参数2：first，当第一次运行插件代码时first为true，页面上就有分页信息了。
+                                //       以后用户通过分页信息点击不同页码时会触发这个函数运行到这里first为false
+                                if(!first){ // false
+                                    // 用户点击不同页码时调用服务器端获取obj.curr指定页码数据更新页面上的数据
+                                    // 发送请求到服务器获取指定页的数据
+                                    showPageInfo(obj.curr);
+                                }
+                            }
+                        });
+
+                    },error:function () { // 失败回调
+                        // 3. 弹框提示：服务器忙....
+                        alert("服务器忙4...")
+                    }
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+     <!-- 排行榜 start-->
+    <section id="content">
+        <section class="tuniu_jx">
+            <div class="jx_top">
+                <div class="jx_tit">
+                    <img src="images/icon_5.jpg" alt="">
+                    <span>我的收藏</span>
+                </div>
+            </div>
+            <div class="jx_content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="--">
+                                    <img src="--" alt="">
+                                    <div class="has_border">
+                                        <h3>--</h3>
+                                        <div class="price"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pageNum">
+                <ul id="laypage"></ul> <!-- 插件实现分页-->
+            </div>
+        </section>
+    </section>
+    <!-- 排行榜 end-->
+
+     <!--引入尾部-->
+    <div id="footer" style="position: fixed;bottom: 0px"></div>
+    <!--导入布局js，共享header和footer-->
+    <script type="text/javascript" src="js/include.js"></script>
+    </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>途牛旅游网-登录</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!--导入json转换js-->
+    <script src="js/json.js"></script>
+
+</head>
+<body>
+<!--引入头部-->
+<div id="header"></div>
+<!-- 头部 end -->
+<section id="login_wrap">
+    <div class="fullscreen-bg" style="background: url(images/login_bg.png) no-repeat;height: 554px;">
+    </div>
+    <div class="login-box">
+        <div class="title">
+            <img src="images/login_logo.png" alt="">
+            <span style="color: white">欢迎登录途牛网</span>
+        </div>
+        <div class="login_inner">
+            <!--登录错误提示消息-->
+            <div id="errorMsg" class="alert alert-danger" ></div>
+            <form id="loginForm" method="post">
+                <input id="username" name="username" type="text" placeholder="请输入账号" autocomplete="off">
+                <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="off">
+                <div class="verify">
+                    <input id="check" name="check" type="text" placeholder="请输入验证码" autocomplete="off">
+                    <span><img src="checkCode" alt="" onclick="changeCheckCode(this)"></span>
+                    <script type="text/javascript">
+                        //图片点击事件
+                        function changeCheckCode(img) {
+                            img.src="checkCode?"+new Date().getTime();
+                        }
+                    </script>
+                </div>
+                <div class="submit_btn">
+                    <button type="button" id="loginBtn">登录</button>
+                    <div class="auto_login">
+                        <input type="checkbox"  class="checkbox">
+                        <span>自动登录</span>
+                    </div>
+                </div>
+            </form>
+            <div class="reg">没有账户？<a href="javascript:;">立即注册</a></div>
+        </div>
+    </div>
+</section>
+<!--引入尾部-->
+<div id="footer"></div>
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+<script>
+    // 1.监听登录按钮点击
+    $("#loginBtn").click(function () {
+        // 2.获取用户名，密码，验证码
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var check = $("#check").val();
+        // 3.判断用户名，密码，验证码是否为空
+        if (username == null || username.trim().length == 0) {
+            $("#errorMsg").html("用户名不能为空");
+            return;
+        }
+        if (password == null || password.trim().length == 0) {
+            $("#errorMsg").html("密码不能为空");
+            return;
+        }
+        if (check == null || check.trim().length == 0) {
+            $("#errorMsg").html("验证码不能为空");
+            return;
+        }
+        // 4.发送异步请求实现用户登录
+        $.post({
+            url:"user",// 请求地址
+            data:{username:username,password:password,check:check,action:"login"}, // 请求参数
+            success:function (result) { // 成功回调
+                // 5.根据服务器返回结果更新页面
+                // result 可能取值  true 或 异常信息字符串
+                if (result == "true"){
+                    // 登录成功，跳转到首页
+                    location.href = "index.html";
+                }  else {
+                    $("#errorMsg").html(result);
+                }
+            },
+            error:function () { // 错误回调
+                alert("服务器忙3...");
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

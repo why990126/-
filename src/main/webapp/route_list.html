@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>途牛旅游-搜索</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" href="css/search.css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+
+    <!--引入分页插件样式文件-->
+    <link rel="stylesheet" href="skin/laypage.css">
+    <!--引入分页插件的js库文件-->
+    <script src="skin/laypage.js"></script>
+</head>
+<body>
+<!--引入头部-->
+<div id="header"></div>
+<div class="page_one">
+    <div class="contant">
+        <div class="crumbs">
+            <img src="images/search.png" alt="">
+            <p>途牛旅行><span style="color: #1CBB38">搜索结果</span></p>
+        </div>
+        <div class="xinxi clearfix">
+            <div class="left">
+                <div class="header" style="color: white;background: limegreen">
+                    <span>商品信息</span>
+                    <span class="jg">价格</span>
+                </div>
+                <ul></ul>
+                <div class="page_num_inf">
+                    <i></i> 共
+                    <span id="number">--</span> 页 <span id="count">--</span> 条
+                </div>
+                <div class="pageNum">
+                    <ul id="laypage"></ul>
+                </div>
+            </div>
+            <div class="right">
+                <div class="top">
+                    <div class="hot">HOT</div>
+                    <span>热门推荐</span>
+                </div>
+                <ul>
+                    <li>
+                        <div class="left"><img src="images/jingxuan_5.jpg" alt=""></div>
+                        <div class="right">
+                            <p>北京古北水镇大酒店2-3日自驾游宿长城脚下</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/jingxuan_5.jpg" alt=""></div>
+                        <div class="right">
+                            <p>北京古北水镇大酒店2-3日自驾游宿长城脚下</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/jingxuan_5.jpg" alt=""></div>
+                        <div class="right">
+                            <p>北京古北水镇大酒店2-3日自驾游宿长城脚下</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/jingxuan_5.jpg" alt=""></div>
+                        <div class="right">
+                            <p>北京古北水镇大酒店2-3日自驾游宿长城脚下</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/jingxuan_5.jpg" alt=""></div>
+                        <div class="right">
+                            <p>北京古北水镇大酒店2-3日自驾游宿长城脚下</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--引入头部-->
+<div id="footer"></div>
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+<!--引入地址栏解析插件-->
+<script src="js/getParameter.js"></script>
+<script>
+    /**
+      问：如何获取header.html页面传递的cid参数值？
+      答：可以使用以下两种方式获取：推荐方式2
+            方式1：通过location.search获取地址栏参数信息，格式：?key=value&key=value
+                 在我们的例子中，location.search获得的值就是: ?cid=5
+                 接下来通过字符串切割方式获得cid的值
+            方式2：上百度搜索JS插件：地址栏解析插件，通过地址栏解析插件提供的方法根据参数名获得参数值，
+                方法如下：var value = getParameter(key)
+     */
+    // 从地址栏上获得分类id
+    var cid = getParameter("cid");
+
+    // 异步请求查询旅游路线数据
+    function showData(curPage,rname){
+        // 发送异步请求查询旅游路线数据
+        $.get({
+            url:"route", // 请求地址
+            data:{cid:cid,curPage:curPage,action:"findPageBeanByCid",rname:rname}, // 请求参数
+            dataType:"json", // 服务器返回数据类型
+            success:function (pageBean) {
+                // pageBean 就是一个json对象了
+                // 更新页面数据
+                // 区域1：列表数据
+                // 定义变量：用来拼接旅游路线数据
+                var li = "";
+                // 获得路线集合数据
+                var routeList = pageBean.dataList;
+                // 遍历路线数组
+                $(routeList).each(function (index,route) {
+                    // 拼接每一个li元素
+                    li += "<li>\n" +
+                        "<div class=\"img\"><img src=\""+route.rimage+"\" width=\"299px\" alt=\"\"></div>\n" +
+                        "<div class=\"text1\">\n" +
+                        "    <p>"+route.rname+"</p>\n" +
+                        "    <br/>\n" +
+                        "    <p>"+route.routeIntroduce+"</p>\n" +
+                        "</div>\n" +
+                        "<div class=\"price\">\n" +
+                        "    <p class=\"price_num\">\n" +
+                        "        <span>&yen;</span>\n" +
+                        "        <span>"+route.price+"</span>\n" +
+                        "        <span>起</span>\n" +
+                        "    </p>\n" +
+                        "    <p><a href=\"route_detail.html?rid="+route.rid+"\">查看详情</a></p>\n" +
+                        "</div>\n" +
+                        "</li>"
+                });
+                // 更新列表区域数据
+                $(".left > ul").html(li);
+                // 区域2：总页数和总记录数
+                $(".page_num_inf #number").html(pageBean.totalPage);
+                $(".page_num_inf #count").html(pageBean.count);
+
+                // 区域3：分页联动信息
+                laypage({
+                    cont: "laypage", // 用于展现分页信息数据的容器标签id名
+                    pages: pageBean.totalPage,    // 通过后台拿到的总页数
+                    curr:  pageBean.curPage,    // 当前页
+                    skin: '#1CBB38', // 设置当前页样式，可以使用内置皮肤（yahei），也可以直接赋值16进制颜色值，如:#c00
+                    groups: 10,// 设置连续显示分页数字的页码的个数
+                    jump: function(obj, first){ // 第一次执行插件代码和用户点击不同页码时候触发运行的函数
+                        // 参数1：obj，这个参数有个属性curr，也就是obj.curr是用户点击要访问的页码
+                        // 参数2：first，当第一次运行插件代码时first为true，页面上就有分页信息了。
+                        //       以后用户通过分页信息点击不同页码时会触发这个函数运行到这里first为false
+                        if(!first){ // false
+                            // 用户点击不同页码时调用服务器端获取obj.curr指定页码数据更新页面上的数据
+                            // 发送请求到服务器获取指定页的数据
+                            showData(obj.curr,rname);
+                        }
+                    }
+                });
+
+            },
+            error:function () {
+                alert("服务器忙4...");
+            }
+        });
+    }
+
+
+    $(function () {
+        // 网页加载完毕发送请求获得分页数据，默认第1页
+        showData(1,'');
+    })
+</script>
+</body>
+
+</html>
