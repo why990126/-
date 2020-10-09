@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocean.dao.IRouteDao">
+
+
+    <sql id="sql">
+        <if test="map.rname != null and map.rname.trim().length > 0">
+            and rname like concat('%',#{map.rname},'%')
+        </if>
+        <if test="map.minPrice != null and map.minPrice.trim().length > 0">
+            and price >= #{map.minPrice}
+        </if>
+        <if test="map.maxPrice != null and map.maxPrice.trim().length > 0">
+            and price &lt;= #{map.maxPrice}
+        </if>
+    </sql>
+    <!-- 查询收藏排行榜总记录数
+        map集合封装了查询条件
+            rname 双飞
+            minPrice 5000
+            maxPrice 10000
+    -->
+    <select id="countForRank"
+            parameterType="map"
+            resultType="int">
+        select count(*) from tab_route where rflag = 1
+        <include refid="sql"></include>
+    </select>
+
+    <!-- 分页查询收藏排行榜数据 -->
+    <select id="findRoutesForRank" resultType="route">
+        select * from tab_route where rflag = 1 <include refid="sql"></include>
+        order by count desc limit #{start},#{pageSize};
+    </select>
+
+</mapper>
