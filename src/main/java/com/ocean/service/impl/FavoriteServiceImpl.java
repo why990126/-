@@ -82,7 +82,7 @@ public class FavoriteServiceImpl implements IFavoriteService {
      * 根据用户id和旅游路线id判断用户是否收藏了路线
      * @param uid
      * @param rid
-     * @return
+     * @returno
      */
     @Override
     public boolean isFavorite(int uid, int rid) {

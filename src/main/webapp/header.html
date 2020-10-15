@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-
 </head>
 <body>
 <!-- 头部 start -->
@@ -13,14 +11,7 @@
         <img src="images/top_banner.png" width="100%" alt="">
     </div>
     <div class="shortcut">
-        <div style="
-                width: 120px;
-                font-size: 12px;
-                height: 50px;
-                line-height: 36px;
-                float: right;">
-            当前在线人数：1000
-        </div>
+        <div id="online"></div>
         <!-- 未登录状态  -->
         <div class="login_out">
             <a href="login.html">登录</a>
@@ -50,6 +41,7 @@
                         function searchRoute() {
                             // 获得文本输入框的值
                             var rname = $("#rname").val();
+                            //alert(rname)
                             // 发送请求根据条件搜索旅游路线
                             showData(1,rname);
                         }
@@ -88,7 +80,6 @@
         // 隐藏未登录状态和登录状态的div
         $(".login_out").hide();
         $(".login").hide();
-
         // 发送请求获取用户登录数据
         $.get({
             url:"user",// 请求地址
